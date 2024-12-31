@@ -2,26 +2,38 @@ package nl.novi.TIEwebapi.models;
 
 public class Television {
 
-    private Long id;
+    private int id;
+    private String television;
     private String brand;
     private String model;
     private int screenSize;
     private boolean smartTv;
 
-    public Television (Long id, String brand, String model, int screenSize, boolean smartTv){
+
+
+    public Television (int id, String television, String brand, String model, int screenSize, boolean smartTv){
         this.id = id;
+        this.television= television;
         this.brand = brand;
         this.model = model;
         this.screenSize = screenSize;
         this.smartTv = smartTv;
     }
 
-    public Long getId () {
+    public int getId () {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTelevision() {
+        return television;
+    }
+
+    public void setTelevision(String television) {
+        this.television = television;
     }
 
     public String getBrand() {

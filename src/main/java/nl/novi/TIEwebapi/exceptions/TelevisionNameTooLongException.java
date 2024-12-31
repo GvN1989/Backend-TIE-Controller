@@ -1,2 +1,15 @@
-package nl.novi.TIEwebapi.exceptions;public class TelevisionNameTooLongException {
+package nl.novi.TIEwebapi.exceptions;
+
+import nl.novi.TIEwebapi.models.Television;
+
+public class TelevisionNameTooLongException extends RuntimeException{
+    public TelevisionNameTooLongException (String message) {
+        super(message);
+
+    }
+
+    public TelevisionNameTooLongException(){
+        super();
+    }
+
 }

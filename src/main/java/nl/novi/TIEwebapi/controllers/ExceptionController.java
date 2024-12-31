@@ -1,6 +1,7 @@
-package nl.novi.TIEwebapi.exceptions;
+package nl.novi.TIEwebapi.controllers;
 
 import nl.novi.TIEwebapi.exceptions.RecordNotFoundException;
+import nl.novi.TIEwebapi.exceptions.TelevisionNameTooLongException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -9,19 +10,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ExceptionController {
 
-    @ExceptionHandler(RecordNotFoundException.class)
-    public ResponseEntity <String> handleRecordNotFoundException (RecordNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    @ExceptionHandler(value = RecordNotFoundException.class)
+    public ResponseEntity <Object> exception(RecordNotFoundException exception) {
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(IndexOutOfBoundsException.class)
-    public ResponseEntity<String> handleIndexOutOfBoundsException() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Television with the requested index not found");
+    @ExceptionHandler(value = IndexOutOfBoundsException.class)
+    public ResponseEntity<Object> exception (IndexOutOfBoundsException exception) {
+        return new ResponseEntity<> ("Dit id staat niet in de database", HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGenericException () {
-        return ResponseEntity.created(null).body("televison");
+    @ExceptionHandler(value = TelevisionNameTooLongException.class)
+    public ResponseEntity<String> exception (
+        TelevisionNameTooLongException exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
 
 }
