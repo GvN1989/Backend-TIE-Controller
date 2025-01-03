@@ -2,6 +2,7 @@ package nl.novi.TIEwebapi.controllers;
 
 import nl.novi.TIEwebapi.exceptions.RecordNotFoundException;
 import nl.novi.TIEwebapi.exceptions.TelevisionNameTooLongException;
+import nl.novi.TIEwebapi.models.Television;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
