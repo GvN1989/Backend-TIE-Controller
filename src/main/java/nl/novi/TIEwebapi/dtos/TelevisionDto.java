@@ -4,6 +4,7 @@ import nl.novi.TIEwebapi.models.Television;
 
 public class TelevisionDto {
 
+
     private Long id;
     private String type;
     private String brand;
