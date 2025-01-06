@@ -1,114 +1,101 @@
 package nl.novi.TIEwebapi.controllers;
 
 
-import nl.novi.TIEwebapi.exceptions.RecordNotFoundException;
+import nl.novi.TIEwebapi.dtos.SalesInfoDto;
+import nl.novi.TIEwebapi.dtos.TelevisionDto;
+import nl.novi.TIEwebapi.dtos.TelevisionInputDto;
+import nl.novi.TIEwebapi.mappers.TelevisionMapper;
 import nl.novi.TIEwebapi.models.Television;
-import nl.novi.TIEwebapi.repositories.TelevisionRepository;
+import nl.novi.TIEwebapi.services.SalesInfoService;
+import nl.novi.TIEwebapi.services.TelevisionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.net.URI;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/televisions")
 public class TelevisionsController {
 
-    private final TelevisionRepository televisionRepository;
+    private final TelevisionService televisionService;
+    private final SalesInfoService salesInfoService;
 
-    public TelevisionsController(TelevisionRepository televisionRepository) {
-        this.televisionRepository = televisionRepository;
+    public TelevisionsController(TelevisionService televisionService, SalesInfoService salesInfoService) {
+        this.televisionService = televisionService;
+        this.salesInfoService = salesInfoService;
     }
 
+    @GetMapping
+    public ResponseEntity <List<TelevisionDto>> getAllTelevisions(@RequestParam(value="brand",required = false) String brand ){
 
-    @GetMapping("/televisions")
-    public ResponseEntity <List<Television>> getAllTelevisions(@RequestParam(value="brand",required = false) String brand ){
         List<Television> televisions;
 
         if (brand == null){
-            televisions = televisionRepository.findAll();
+            televisions = televisionService.findAll();
         } else {
-            televisions=televisionRepository.findAllTelevisionsByBrandEqualsIgnoreCase(brand);
+            televisions=televisionService.findAllTelevisionsByBrandEqualsIgnoreCase(brand);
         }
 
-    return ResponseEntity.ok(televisions);
+        List<TelevisionDto> televisionsDtos= televisions.stream()
+                .map(TelevisionMapper::toTelevisionDto)
+                .collect(Collectors.toList());
+
+    return ResponseEntity.ok(televisionsDtos);
     }
 
-    @GetMapping("/televisions/{id}")
-    public ResponseEntity <Television> getTelevision(@PathVariable ("id") Long id)  {
+    @GetMapping("/salesInfo")
+    public ResponseEntity<List<SalesInfoDto>> getAllSalesInfo(){
+        List<SalesInfoDto> salesInfo= salesInfoService.getAllSalesInfo();
 
-        Television television = televisionRepository.findById(id)
-                .orElseThrow(()-> new RecordNotFoundException("No television found with id: " + id));
-        return ResponseEntity.ok ().body(television);
+        return ResponseEntity.ok(salesInfo);
+
     }
 
-    @PostMapping("/televisions")
-        public ResponseEntity <Television> addTelevision(@RequestBody Television television) {
+    @GetMapping("/{id}")
+    public ResponseEntity <TelevisionDto> getTelevision(@PathVariable ("id") Long id)  {
+        Television television = televisionService.findById(id);
 
-            Television returnTelevision = televisionRepository.save(television);
+        TelevisionDto dto = TelevisionMapper.toTelevisionDto(television);
 
-            return ResponseEntity.created(null).body(returnTelevision);
+        return ResponseEntity.ok (dto);
     }
 
-    @DeleteMapping ("/televisions/{id}")
-    public ResponseEntity <Object> deleteTelevision(@PathVariable ("id") Long id) {
-        televisionRepository.deleteById(id);
+    @PostMapping
+        public ResponseEntity <TelevisionDto> addTelevision(@RequestBody TelevisionInputDto inputDto) {
+
+            Television savedTelevision = televisionService.saveTelevision(inputDto);
+
+            TelevisionDto savedTelevisionDto = TelevisionMapper.toTelevisionDto(savedTelevision);
+
+            return ResponseEntity.created(URI.create("/televisions/" + savedTelevisionDto.getId())).body(savedTelevisionDto);
+    }
+
+    @DeleteMapping ("/{id}")
+    public ResponseEntity <Void> deleteTelevision(@PathVariable ("id") Long id) {
+        televisionService.deleteTelevision(id);
 
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/televisions/{id}")
-        public ResponseEntity<Television> updateTelevision(@PathVariable Long id, @RequestBody Television newTelevision) {
+    @PutMapping("/{id}")
+        public ResponseEntity<TelevisionDto> updateTelevision(@PathVariable Long id, @RequestBody TelevisionInputDto inputDto) {
 
-        Television television1 = televisionRepository.findById(id)
-                .orElseThrow(()-> new RecordNotFoundException("No television found with id: " + id));
+        Television updatedTelevision = televisionService.updateTelevision(id, inputDto);
 
-            television1.setAmbiLight(newTelevision.getAmbiLight());
-            television1.setAvailableSize(newTelevision.getAvailableSize());
-            television1.setBluetooth(newTelevision.getBluetooth());
-            television1.setBrand(newTelevision.getBrand());
-            television1.setHdr(newTelevision.getHdr());
-            television1.setName(newTelevision.getName());
-            television1.setOriginalStock(newTelevision.getOriginalStock());
-            television1.setPrice(newTelevision.getPrice());
-            television1.setRefreshRate(newTelevision.getRefreshRate());
-            television1.setScreenQuality(newTelevision.getScreenQuality());
-            television1.setScreenType(newTelevision.getScreenType());
-            television1.setSmartTv(newTelevision.getSmartTv());
-            television1.setSold(newTelevision.getSold());
-            television1.setType(newTelevision.getType());
-            television1.setVoiceControl(newTelevision.getVoiceControl());
-            television1.setWifi(newTelevision.getWifi());
+        TelevisionDto updatedTelevisionDto = TelevisionMapper.toTelevisionDto(updatedTelevision);
 
-            Television updatedTelevision = televisionRepository.save(television1);
-
-            return ResponseEntity.ok().body(updatedTelevision);
+        return ResponseEntity.ok().body(updatedTelevisionDto);
         }
 
-        @PatchMapping("/televisions/{id}")
-        public ResponseEntity<Television> updatePartialTelevision(@PathVariable Long id, @RequestBody Television newTelevision){
+    @PatchMapping("/{id}")
+        public ResponseEntity<TelevisionDto> updatePartialTelevision(@PathVariable Long id, @RequestBody TelevisionInputDto inputDto){
 
-            Television television = televisionRepository.findById(id)
-                    .orElseThrow(()-> new RecordNotFoundException("No television found with id: " + id));
+            Television updatedTelevision = televisionService.updatePartialTelevision(id,inputDto);
+            TelevisionDto updatedTelevisionDto= TelevisionMapper.toTelevisionDto(updatedTelevision);
 
-            if (newTelevision.getAmbiLight() != null) television.setAmbiLight(newTelevision.getAmbiLight());
-            if (newTelevision.getAvailableSize() != null) television.setAvailableSize(newTelevision.getAvailableSize());
-            if (newTelevision.getBluetooth() != null) television.setBluetooth(newTelevision.getBluetooth());
-            if (newTelevision.getBrand() != null) television.setBrand(newTelevision.getBrand());
-            if (newTelevision.getHdr() != null) television.setHdr(newTelevision.getHdr());
-            if (newTelevision.getName() != null) television.setName(newTelevision.getName());
-            if (newTelevision.getOriginalStock() != null) television.setOriginalStock(newTelevision.getOriginalStock());
-            if (newTelevision.getPrice() != null) television.setPrice(newTelevision.getPrice());
-            if (newTelevision.getRefreshRate() != null) television.setRefreshRate(newTelevision.getRefreshRate());
-            if (newTelevision.getScreenQuality() != null) television.setScreenQuality(newTelevision.getScreenQuality());
-            if (newTelevision.getScreenType() != null) television.setScreenType(newTelevision.getScreenType());
-            if (newTelevision.getSmartTv() != null) television.setSmartTv(newTelevision.getSmartTv());
-            if (newTelevision.getSold() != null) television.setSold(newTelevision.getSold());
-            if (newTelevision.getType() != null) television.setType(newTelevision.getType());
-            if (newTelevision.getVoiceControl() != null) television.setVoiceControl(newTelevision.getVoiceControl());
-            if (newTelevision.getWifi() != null) television.setWifi(newTelevision.getWifi());
-
-            Television updatedTelevision = televisionRepository.save(television);
-
-            return ResponseEntity.ok().body(updatedTelevision);
+            return ResponseEntity.ok().body(updatedTelevisionDto);
 
         }
 
