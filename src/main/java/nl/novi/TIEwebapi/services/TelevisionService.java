@@ -1,12 +1,10 @@
 package nl.novi.TIEwebapi.services;
 
-import nl.novi.TIEwebapi.dtos.TelevisionDto;
 import nl.novi.TIEwebapi.dtos.TelevisionInputDto;
 import nl.novi.TIEwebapi.exceptions.RecordNotFoundException;
 import nl.novi.TIEwebapi.mappers.TelevisionMapper;
 import nl.novi.TIEwebapi.models.Television;
 import nl.novi.TIEwebapi.repositories.TelevisionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

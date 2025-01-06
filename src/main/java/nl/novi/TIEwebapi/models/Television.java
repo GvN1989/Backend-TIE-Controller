@@ -28,29 +28,6 @@ public class Television {
     private Integer originalStock;
     private Integer sold;
 
-    public Television() {
-
-    }
-
-    public Television (Long id, String type, String brand, String name, Double price, Double availableSize, Integer refreshRate, String screenType, String screenQuality, boolean smartTv,Boolean wifi, Boolean voiceControl, Boolean hdr,Boolean bluetooth, Boolean ambiLight,Integer originalStock, Integer sold){
-        this.id = id;
-        this.type= type;
-        this.brand = brand;
-        this.name = name;
-        this.price = price;
-        this.availableSize = availableSize;
-        this.refreshRate= refreshRate;
-        this.screenType= screenType;
-        this.screenQuality= screenQuality;
-        this.smartTv=smartTv;
-        this.wifi= wifi;
-        this.voiceControl= voiceControl;
-        this.hdr= hdr;
-        this.bluetooth= bluetooth;
-        this.ambiLight= ambiLight;
-        this.originalStock= originalStock;
-        this.sold= sold;
-    }
 
     public String getType() {
         return type;
