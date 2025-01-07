@@ -1,10 +1,11 @@
 package nl.novi.TIEwebapi.dtos;
 
 import nl.novi.TIEwebapi.models.Television;
+import nl.novi.TIEwebapi.models.WallBracket;
+
+import java.util.Set;
 
 public class TelevisionDto {
-
-
     private Long id;
     private String type;
     private String brand;
@@ -22,6 +23,10 @@ public class TelevisionDto {
     private Boolean ambiLight;
     private Integer originalStock;
     private Integer sold;
+    private RemoteControlDto remoteControl;
+    private Long ciModuleId;
+    private Set<Long> wallBracketIds;
+
 
     public Long getId() {
         return id;
@@ -159,5 +164,27 @@ public class TelevisionDto {
         this.sold = sold;
     }
 
+    public RemoteControlDto getRemoteControl() {
+        return remoteControl;
+    }
 
+    public void setRemoteControl(RemoteControlDto remoteControl) {
+        this.remoteControl = remoteControl;
+    }
+
+    public Long getCiModuleId() {
+        return ciModuleId;
+    }
+
+    public void setCiModuleId(Long ciModuleId) {
+        this.ciModuleId = ciModuleId;
+    }
+
+    public Set<Long> getWallBracketIds() {
+        return wallBracketIds;
+    }
+
+    public void setWallBracketIds(Set<Long> wallBracketIds) {
+        this.wallBracketIds = wallBracketIds;
+    }
 }

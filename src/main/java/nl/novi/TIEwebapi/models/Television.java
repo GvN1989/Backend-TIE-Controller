@@ -3,6 +3,10 @@ package nl.novi.TIEwebapi.models;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.rmi.Remote;
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name="televisions")
 
@@ -28,28 +32,28 @@ public class Television {
     private Integer originalStock;
     private Integer sold;
 
-    public Television() {
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name= "remote_control_id", referencedColumnName = "id")
+    private RemoteControl remoteControl;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="ci_module_id")
+    private CiModule ciModule;
+
+    @ManyToMany (cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name="television_wallbrackets",
+            joinColumns = @JoinColumn(name="television_id"),
+            inverseJoinColumns = @JoinColumn(name="wallbracket_id")
+    )
+    private Set<WallBracket> wallBrackets = new HashSet<>();
+
+    public Set<WallBracket> getWallBrackets() {
+        return wallBrackets;
     }
 
-    public Television (Long id, String type, String brand, String name, Double price, Double availableSize, Integer refreshRate, String screenType, String screenQuality, boolean smartTv,Boolean wifi, Boolean voiceControl, Boolean hdr,Boolean bluetooth, Boolean ambiLight,Integer originalStock, Integer sold){
-        this.id = id;
-        this.type= type;
-        this.brand = brand;
-        this.name = name;
-        this.price = price;
-        this.availableSize = availableSize;
-        this.refreshRate= refreshRate;
-        this.screenType= screenType;
-        this.screenQuality= screenQuality;
-        this.smartTv=smartTv;
-        this.wifi= wifi;
-        this.voiceControl= voiceControl;
-        this.hdr= hdr;
-        this.bluetooth= bluetooth;
-        this.ambiLight= ambiLight;
-        this.originalStock= originalStock;
-        this.sold= sold;
+    public void setWallBrackets(Set<WallBracket> wallBrackets) {
+        this.wallBrackets = wallBrackets;
     }
 
     public String getType() {
@@ -197,4 +201,19 @@ public class Television {
         this.smartTv = smartTv;
     }
 
+    public RemoteControl getRemoteControl() {
+        return remoteControl;
+    }
+
+    public void setRemoteControl(RemoteControl remoteControl) {
+        this.remoteControl = remoteControl;
+    }
+
+    public CiModule getCiModule() {
+        return ciModule;
+    }
+
+    public void setCiModule(CiModule ciModule) {
+        this.ciModule = ciModule;
+    }
 }

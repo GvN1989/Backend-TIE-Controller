@@ -1,12 +1,16 @@
 package nl.novi.TIEwebapi.services;
 
-import nl.novi.TIEwebapi.dtos.TelevisionDto;
 import nl.novi.TIEwebapi.dtos.TelevisionInputDto;
 import nl.novi.TIEwebapi.exceptions.RecordNotFoundException;
 import nl.novi.TIEwebapi.mappers.TelevisionMapper;
+import nl.novi.TIEwebapi.models.CiModule;
+import nl.novi.TIEwebapi.models.RemoteControl;
 import nl.novi.TIEwebapi.models.Television;
+import nl.novi.TIEwebapi.models.WallBracket;
+import nl.novi.TIEwebapi.repositories.CiModuleRepository;
+import nl.novi.TIEwebapi.repositories.RemoteControlRepository;
 import nl.novi.TIEwebapi.repositories.TelevisionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import nl.novi.TIEwebapi.repositories.WallBracketRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +19,16 @@ import java.util.List;
 public class TelevisionService {
 
     private final TelevisionRepository televisionRepository;
+    private final RemoteControlRepository remoteControlRepository;
+    private final CiModuleRepository ciModuleRepository;
 
-    public TelevisionService(TelevisionRepository televisionRepository) {
+    private final WallBracketRepository wallBracketRepository;
+
+    public TelevisionService(TelevisionRepository televisionRepository, RemoteControlRepository remoteControlRepository, CiModuleRepository ciModuleRepository, WallBracketRepository wallBracketRepository) {
         this.televisionRepository = televisionRepository;
+        this.remoteControlRepository = remoteControlRepository;
+        this.ciModuleRepository = ciModuleRepository;
+        this.wallBracketRepository = wallBracketRepository;
     }
 
     public List<Television> findAll(){
@@ -81,6 +92,45 @@ public class TelevisionService {
         return televisionRepository.findAllByBrandEqualsIgnoreCase(brand);
 
     }
+
+    public Television assignRemoteControlToTelevision( Long televisionId, Long remoteControlId) {
+
+        Television television = televisionRepository.findById(televisionId)
+                .orElseThrow(()-> new RecordNotFoundException("Television with ID " + televisionId + " not found"));
+
+        RemoteControl remoteControl = remoteControlRepository.findById(remoteControlId)
+                .orElseThrow(() -> new RecordNotFoundException("RemoteControl with ID " + remoteControlId + " not found"));
+
+        television.setRemoteControl(remoteControl);
+
+        return televisionRepository.save(television);
+    }
+
+    public Television assignCiModuletoTelevision (Long televisionId, Long CiModuleId) {
+        Television television = televisionRepository.findById(televisionId)
+                .orElseThrow(()-> new RecordNotFoundException("Television with ID " + televisionId + " not found"));
+
+        CiModule ciModule = ciModuleRepository.findById(CiModuleId)
+                .orElseThrow(() -> new RecordNotFoundException("CI-module with ID " + CiModuleId + " not found"));
+
+        television.setCiModule(ciModule);
+
+        return televisionRepository.save(television);
+    }
+
+    public Television assignWallBracketToTelevision(Long televisionId, Long wallBracketId) {
+        Television television = televisionRepository.findById(televisionId)
+                .orElseThrow(() -> new RecordNotFoundException("Television with ID " + televisionId + " not found"));
+
+        WallBracket wallBracket = wallBracketRepository.findById(wallBracketId)
+                .orElseThrow(() -> new RecordNotFoundException("WallBracket with ID " + wallBracketId + " not found"));
+
+        television.getWallBrackets().add(wallBracket);
+        wallBracket.getTelevisions().add(television);
+
+        return televisionRepository.save(television);
+    }
+
 
 }
 
