@@ -4,6 +4,9 @@ import nl.novi.TIEwebapi.dtos.SalesInfoDto;
 import nl.novi.TIEwebapi.dtos.TelevisionDto;
 import nl.novi.TIEwebapi.dtos.TelevisionInputDto;
 import nl.novi.TIEwebapi.models.Television;
+import nl.novi.TIEwebapi.models.WallBracket;
+
+import java.util.stream.Collectors;
 
 public class TelevisionMapper {
 
@@ -27,6 +30,22 @@ public class TelevisionMapper {
         dto.setAmbiLight(television.getAmbiLight());
         dto.setOriginalStock(television.getOriginalStock());
         dto.setSold(television.getSold());
+
+        if(television.getRemoteControl()!= null) {
+            dto.setRemoteControl(RemoteControlMapper.toRemoteControlDto(television.getRemoteControl()));
+        }
+
+        if(television.getCiModule()!= null) {
+            dto.setCiModuleId(television.getCiModule().getId());
+        }
+
+        if (television.getWallBrackets() != null) {
+            dto.setWallBracketIds(
+                    television.getWallBrackets().stream()
+                            .map(WallBracket::getId)
+                            .collect(Collectors.toSet())
+            );
+        }
 
         return dto;
     }

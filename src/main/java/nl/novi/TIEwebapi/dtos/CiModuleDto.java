@@ -1,10 +1,13 @@
 package nl.novi.TIEwebapi.dtos;
 
+import java.util.List;
+
 public class CiModuleDto {
     private Long Id;
     private String name;
     private String type;
     private Double price;
+    private List<Long> televisionsIds;
 
 
     public Long getId() {
@@ -37,5 +40,13 @@ public class CiModuleDto {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public List<Long> getTelevisionsIds() {
+        return televisionsIds;
+    }
+
+    public void setTelevisionsIds(List<Long> televisionsIds) {
+        this.televisionsIds = televisionsIds;
     }
 }

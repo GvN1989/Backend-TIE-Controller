@@ -2,8 +2,10 @@ package nl.novi.TIEwebapi.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
-@Table (name="CI-modules")
+@Table (name="ci_modules")
 public class CiModule {
 
     @Id
@@ -12,6 +14,9 @@ public class CiModule {
     private String name;
     private String type;
     private Double price;
+
+    @OneToMany(mappedBy = "ciModule", cascade = CascadeType.ALL)
+    private List<Television> televisions;
 
 
     public Long getId() {
@@ -44,5 +49,13 @@ public class CiModule {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public List<Television> getTelevisions() {
+        return televisions;
+    }
+
+    public void setTelevisions(List<Television> televisions) {
+        this.televisions = televisions;
     }
 }

@@ -1,9 +1,7 @@
 package nl.novi.TIEwebapi.controllers;
 
 
-import nl.novi.TIEwebapi.dtos.SalesInfoDto;
-import nl.novi.TIEwebapi.dtos.TelevisionDto;
-import nl.novi.TIEwebapi.dtos.TelevisionInputDto;
+import nl.novi.TIEwebapi.dtos.*;
 import nl.novi.TIEwebapi.mappers.TelevisionMapper;
 import nl.novi.TIEwebapi.models.Television;
 import nl.novi.TIEwebapi.services.SalesInfoService;
@@ -88,6 +86,42 @@ public class TelevisionsController {
 
         return ResponseEntity.ok().body(updatedTelevisionDto);
         }
+
+    @PutMapping("/{televisionId}/remotecontroller")
+    public ResponseEntity<TelevisionDto> updateRelationRemoteControl(
+            @PathVariable Long televisionId,
+            @RequestBody IdInputDto idInputDto) {
+
+        Television updatedTelevision = televisionService.assignRemoteControlToTelevision(televisionId, idInputDto.getId());
+
+        TelevisionDto updatedTelevisionDto = TelevisionMapper.toTelevisionDto(updatedTelevision);
+
+        return ResponseEntity.ok().body(updatedTelevisionDto);
+    }
+
+    @PutMapping("/{televisionId}/cimodule")
+    public ResponseEntity<TelevisionDto> updateRelationCiModule(
+            @PathVariable Long televisionId,
+            @RequestBody IdInputDto idInputDto) {
+
+        Television updatedTelevision = televisionService.assignCiModuletoTelevision(televisionId, idInputDto.getId());
+
+        TelevisionDto updatedTelevisionDto = TelevisionMapper.toTelevisionDto(updatedTelevision);
+
+        return ResponseEntity.ok().body(updatedTelevisionDto);
+    }
+
+    @PutMapping("/{id}/wallbrackets")
+    public ResponseEntity<TelevisionDto> addWallBracketToTelevision(
+            @PathVariable Long id,
+            @RequestBody IdInputDto wallBracketIdDto) {
+
+        Television updatedTelevision = televisionService.assignWallBracketToTelevision(id, wallBracketIdDto.getId());
+        TelevisionDto updatedTelevisionDto = TelevisionMapper.toTelevisionDto(updatedTelevision);
+
+        return ResponseEntity.ok(updatedTelevisionDto);
+
+    }
 
     @PatchMapping("/{id}")
         public ResponseEntity<TelevisionDto> updatePartialTelevision(@PathVariable Long id, @RequestBody TelevisionInputDto inputDto){

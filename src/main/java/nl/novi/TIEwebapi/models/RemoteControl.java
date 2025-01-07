@@ -3,7 +3,7 @@ package nl.novi.TIEwebapi.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="remote controllers")
+@Table(name="remote_controls")
 public class RemoteControl {
 
     @Id
@@ -15,7 +15,8 @@ public class RemoteControl {
     private String brand;
     private Double price;
     private Integer originalStock;
-
+    @OneToOne(mappedBy = "remoteControl", cascade = CascadeType.ALL)
+    private Television television;
     public Long getId() {
         return id;
     }
@@ -70,5 +71,13 @@ public class RemoteControl {
 
     public void setOriginalStock(Integer originalStock) {
         this.originalStock = originalStock;
+    }
+
+    public Television getTelevision() {
+        return television;
+    }
+
+    public void setTelevision(Television television) {
+        this.television = television;
     }
 }

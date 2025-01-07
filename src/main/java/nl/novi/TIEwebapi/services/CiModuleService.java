@@ -21,10 +21,15 @@ public class CiModuleService {
     public List<CiModule> findAll(){return ciModuleRepository.findAll();}
 
     public CiModule findById(Long id) {
-        return ciModuleRepository.findById(id)
-                .orElseThrow(()-> new RecordNotFoundException("CI-module with id: " + id + "not found"));
-    }
+        CiModule ciModule = ciModuleRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("CI-module with id: " + id + "not found"));
 
+        if (ciModule.getTelevisions() != null) {
+            ciModule.getTelevisions().size();
+        }
+
+        return ciModule;
+    }
     public CiModule saveCiModule(CiModuleInputDto inputDto) {
         CiModule ciModule = CiModuleMapper.toCiModuleEntity(inputDto);
         return ciModuleRepository.save(ciModule);

@@ -3,6 +3,8 @@ package nl.novi.TIEwebapi.models;
 import jakarta.persistence.*;
 
 import javax.swing.text.StyledEditorKit;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table (name= "wallbrackets")
@@ -17,6 +19,16 @@ public class WallBracket {
     private String name;
     private Double price;
 
+    @ManyToMany(mappedBy = "wallBrackets", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<Television> televisions = new HashSet<>();
+
+    public Set<Television> getTelevisions() {
+        return televisions;
+    }
+
+    public void setTelevisions(Set<Television> televisions) {
+        this.televisions = televisions;
+    }
 
     public Long getId() {
         return id;

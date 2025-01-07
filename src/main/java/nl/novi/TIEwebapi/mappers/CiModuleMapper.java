@@ -3,6 +3,9 @@ package nl.novi.TIEwebapi.mappers;
 import nl.novi.TIEwebapi.dtos.CiModuleDto;
 import nl.novi.TIEwebapi.dtos.CiModuleInputDto;
 import nl.novi.TIEwebapi.models.CiModule;
+import nl.novi.TIEwebapi.models.Television;
+
+import java.util.stream.Collectors;
 
 public class CiModuleMapper {
 
@@ -14,6 +17,13 @@ public class CiModuleMapper {
         dto.setType(ciModule.getType());
         dto.setPrice(ciModule.getPrice());
 
+        if (ciModule.getTelevisions() != null) {
+            dto.setTelevisionsIds(
+                    ciModule.getTelevisions().stream()
+                            .map(Television::getId)
+                            .collect(Collectors.toList())
+            );
+        }
         return dto;
     }
 
